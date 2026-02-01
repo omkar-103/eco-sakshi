@@ -81,7 +81,7 @@ const roleConfig = {
 };
 
 const planConfig = {
-  free: { label: 'Free', color: 'bg-sage-100 text-sage-600' },
+  free: { label: 'Free', color: 'bg-sage-100 text-sage-600', icon: undefined },
   premium: { label: 'Premium', color: 'bg-forest-100 text-forest-700', icon: Crown },
   enterprise: { label: 'Enterprise', color: 'bg-purple-100 text-purple-700', icon: Building2 },
 };
