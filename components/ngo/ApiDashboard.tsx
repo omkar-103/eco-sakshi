@@ -55,6 +55,7 @@ const API_PLANS = {
     duration: '7 days',
     features: ['50 requests/day', '500 requests/month', 'Basic endpoints'],
     color: 'sage',
+    popular: false,
   },
   basic: {
     name: 'Basic',
@@ -63,6 +64,7 @@ const API_PLANS = {
     duration: '30 days',
     features: ['1,000 requests/day', '10,000 requests/month', 'Stats endpoint', 'Map data'],
     color: 'ocean',
+    popular: false,
   },
   premium: {
     name: 'Premium',
@@ -80,6 +82,7 @@ const API_PLANS = {
     duration: '30 days',
     features: ['20,000 requests/day', '200,000 requests/month', 'Advanced analytics', 'Priority support'],
     color: 'purple',
+    popular: false,
   },
 };
 
