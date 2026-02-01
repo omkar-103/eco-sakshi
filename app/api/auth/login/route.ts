@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { verifyFirebaseToken } from '@/lib/firebase/admin';
 import connectDB from '@/lib/db/mongoose';
 import User from '@/models/User';
+import type { User as UserType } from '@/types';
 import { generateToken } from '@/lib/utils/auth';
 import { sendWelcomeEmail } from '@/lib/email/nodemailer';
 
@@ -71,7 +72,7 @@ export async function POST(request: NextRequest) {
 await sendWelcomeEmail({
   ...user.toObject(),
   _id: user._id.toString(),
-} as User);      } catch (emailError) {
+} as UserType);      } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
         // Don't fail login if email fails
       }
