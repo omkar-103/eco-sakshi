@@ -1,3 +1,4 @@
+// app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyFirebaseToken } from '@/lib/firebase/admin';
@@ -67,8 +68,10 @@ export async function POST(request: NextRequest) {
 
       // Send welcome email for new users
       try {
-        await sendWelcomeEmail(user.toObject());
-      } catch (emailError) {
+await sendWelcomeEmail({
+  ...user.toObject(),
+  _id: user._id.toString(),
+});      } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
         // Don't fail login if email fails
       }
