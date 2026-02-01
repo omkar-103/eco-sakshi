@@ -1,4 +1,3 @@
-// app/api/admin/reports/bulk/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongoose';
 import Report from '@/models/Report';
@@ -18,7 +17,7 @@ export async function POST(request: NextRequest) {
 
     const { action, reportIds } = await request.json();
 
-    if (!action || !reportIds || !Array.isArray(reportIds)) {
+    if (!action || !Array.isArray(reportIds)) {
       return NextResponse.json(
         { success: false, error: 'Invalid request' },
         { status: 400 }
@@ -81,11 +80,9 @@ export async function POST(request: NextRequest) {
         );
         break;
 
-      case 'delete':
-        // Get reports to update user stats
+      case 'delete': {
         const reports = await Report.find({ _id: { $in: reportIds } });
 
-        // Update user stats
         for (const report of reports) {
           await User.findByIdAndUpdate(report.userId, {
             $inc: {
@@ -98,6 +95,7 @@ export async function POST(request: NextRequest) {
 
         result = await Report.deleteMany({ _id: { $in: reportIds } });
         break;
+      }
 
       default:
         return NextResponse.json(
@@ -106,9 +104,14 @@ export async function POST(request: NextRequest) {
         );
     }
 
+    const affectedCount =
+      'modifiedCount' in result
+        ? result.modifiedCount
+        : result.deletedCount;
+
     return NextResponse.json({
       success: true,
-      message: `${result.modifiedCount || result.deletedCount} reports updated`,
+      message: `${affectedCount} reports updated`,
     });
   } catch (error) {
     console.error('Bulk action error:', error);
