@@ -1,3 +1,4 @@
+// app/api/reports/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongoose';
 import Report from '@/models/Report';
@@ -111,35 +112,44 @@ export async function POST(request: NextRequest) {
     });
 
     // Populate user for email
-    const populatedReport = await Report.findById(report._id)
-      .populate('userId', 'name email')
-      .lean();
+   // Populate user for email
+const populatedReport = await Report.findById(report._id)
+  .populate('userId', 'name email')
+  .lean() as {
+    _id: string;
+    complaintId: string;
+    title: string;
+    category: string;
+    severity: string;
+    createdAt: Date;
+    userId: { _id: string; name: string; email: string };
+    [key: string]: unknown;
+  } | null;
 
-    // Send confirmation email
-    try {
-      if (populatedReport) {
-        await sendReportSubmittedEmail(
-          { 
-            ...user, 
-            _id: user._id.toString(),
-            name: user.name,
-            email: user.email,
-          } as any,
-          { 
-            ...populatedReport, 
-            _id: populatedReport._id.toString(),
-            complaintId: populatedReport.complaintId,
-            title: populatedReport.title,
-            category: populatedReport.category,
-            severity: populatedReport.severity,
-            createdAt: populatedReport.createdAt,
-          } as any
-        );
-      }
-    } catch (emailError) {
-      console.error('Failed to send report submission email:', emailError);
-      // Don't fail the request if email fails
-    }
+// Send confirmation email
+try {
+  if (populatedReport) {
+    await sendReportSubmittedEmail(
+      { 
+        ...user, 
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.email,
+      } as any,
+      { 
+        ...populatedReport, 
+        _id: populatedReport._id.toString(),
+        complaintId: populatedReport.complaintId,
+        title: populatedReport.title,
+        category: populatedReport.category,
+        severity: populatedReport.severity,
+        createdAt: populatedReport.createdAt,
+      } as any
+    );
+  }
+} catch (emailError) {
+  console.error('Failed to send report submission email:', emailError);
+}
 
     return NextResponse.json({
       success: true,
