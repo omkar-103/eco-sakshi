@@ -1,3 +1,4 @@
+// app/api/reports/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db/mongoose';
 import Report from '@/models/Report';
@@ -28,7 +29,11 @@ export async function GET(
       .populate('assignedTo', 'name email')
       .populate('statusHistory.changedBy', 'name')
       .populate('authorityResponse.respondedBy', 'name')
-      .lean();
+      .lean() as {
+        _id: string;
+        userId: { _id: string; name: string; email: string; avatar?: string };
+        [key: string]: unknown;
+      } | null;
 
     if (!report) {
       return NextResponse.json(
