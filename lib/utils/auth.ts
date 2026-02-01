@@ -40,7 +40,7 @@ export async function getServerSession(): Promise<IUser | null> {
 
     if (!user || !user.isActive) return null;
 
-    return user as IUser;
+    return user as unknown as IUser;
   } catch (error) {
     console.error('Session error:', error);
     return null;
@@ -60,7 +60,7 @@ export async function getUserFromRequest(request: NextRequest): Promise<IUser | 
 
     if (!user || !user.isActive) return null;
 
-    return user as IUser;
+    return user as unknown as IUser;
   } catch (error) {
     console.error('Get user error:', error);
     return null;
