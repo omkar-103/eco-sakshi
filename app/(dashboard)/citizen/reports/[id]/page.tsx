@@ -1,3 +1,4 @@
+// app/(dashboard)/citizen/reports/[id]/page.tsx
 import { getServerSession } from '@/lib/utils/serverAuth';
 import { redirect, notFound } from 'next/navigation';
 import connectDB from '@/lib/db/mongoose';
@@ -47,7 +48,15 @@ export default async function ReportDetailPage({ params, searchParams }: PagePro
   }
 
   // Check access for citizens - they can only view their own reports
-  const reportUserId = (report.userId as any)?._id?.toString() || report.userId?.toString();
+const reportDoc = Array.isArray(report) ? report[0] : report;
+
+const reportUserId =
+  (reportDoc as any)?.userId?._id?.toString() ||
+  (reportDoc as any)?.userId?.toString();
+
+if (user.role === "citizen" && reportUserId !== user._id.toString()) {
+  redirect("/citizen/reports");
+}
   if (user.role === 'citizen' && reportUserId !== user._id.toString()) {
     redirect('/citizen/reports');
   }
