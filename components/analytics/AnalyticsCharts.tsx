@@ -1,7 +1,7 @@
 // components/analytics/AnalyticsCharts.tsx
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, JSX } from 'react';
 import {
   BarChart3,
   TrendingUp,
