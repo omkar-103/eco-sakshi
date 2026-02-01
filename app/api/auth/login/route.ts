@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 await sendWelcomeEmail({
   ...user.toObject(),
   _id: user._id.toString(),
-});      } catch (emailError) {
+} as User);      } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
         // Don't fail login if email fails
       }

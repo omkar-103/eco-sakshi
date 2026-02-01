@@ -1,3 +1,4 @@
+// types/index.ts
 export type UserRole = 'citizen' | 'authority' | 'ngo' | 'admin';
 
 export type ReportStatus = 
@@ -47,7 +48,7 @@ export interface MediaFile {
 
 export interface User {
   _id: string;
-  firebaseUid: string;
+firebaseUid?: string;
   email: string;
   name: string;
   avatar?: string;
