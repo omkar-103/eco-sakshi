@@ -12,6 +12,13 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+interface LeanReport {
+  _id: string;
+  viewCount?: number;
+  statusHistory?: Array<{ changedBy: { name: string } }>;
+  [key: string]: unknown;
+}
+
 export default async function PublicReportDetailPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -21,13 +28,12 @@ export default async function PublicReportDetailPage({ params }: PageProps) {
 
   await connectDB();
 
-  // Remove isPublic filter to show all verified/in-progress/resolved reports
   const report = await Report.findOne({
     _id: id,
     status: { $in: ['pending', 'verified', 'under-review', 'in-progress', 'resolved'] },
   })
     .populate('statusHistory.changedBy', 'name')
-    .lean();
+    .lean() as LeanReport | null;
 
   if (!report) {
     notFound();
@@ -37,7 +43,9 @@ export default async function PublicReportDetailPage({ params }: PageProps) {
   await Report.findByIdAndUpdate(id, { $inc: { viewCount: 1 } });
 
   // Get updated view count
-  const updatedReport = await Report.findById(id).select('viewCount').lean();
+  const updatedReport = await Report.findById(id)
+    .select('viewCount')
+    .lean() as { viewCount?: number } | null;
   
   const plainReport = JSON.parse(JSON.stringify({
     ...report,
